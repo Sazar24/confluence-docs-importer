@@ -1,0 +1,28 @@
+{
+  "name": "confluence-docs-import",
+  "version": "1.0.0",
+  "description": "app to create files-structure compatible with confluence import/export features.",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run server",
+    "test": "npx jest --watch",
+    "server": "tsc --watch | nodemon --inspect ./dist/index.js --watch dist"
+  },
+  "keywords": [
+    "confluence",
+    "multi-import"
+  ],
+  "author": "cb",
+  "license": "beerware",
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "nodemon": "^1.18.9",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^5.0.4",
+    "fs-extra": "^7.0.1",
+    "jest": "^24.5.0"
+  }
+}
