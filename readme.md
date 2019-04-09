@@ -1,42 +1,36 @@
-# start:
-run `npm start`. 
-
 # objective
-1. Przenieść starą dokumentację (obecnie trzymaną na dyskach w postaci .doc) do Confluence. Głównie w celu ułatwienia wyszukiwania informacji.
-Dotyczy: 
-- dokumentacja modułów PMFS (ok. 1000 plików)
-- Analizy do zgłoszeń załączone do podtasków w JIRA
+1. Move hundreds of old documentation files (kept in .docx) to Confluence space.
+2. Those files content must be displayed on confluence pages directly - not via attachments-link.
 
-2. Zwiększyć czytelność wyszukiwania w Confluence. Tj. treść improtowanej dokumentacji powinna znajdować się bezpośrednio na stronach Confluence; Gdy jest tylko wrzucona jako załącznik do poszczególnych stron, nie działają wszystkie funkcjonalności wyszukiwania. (Konkretnie: nie działa opcja "wyszukuj tylko w podstronach strony X ").
+# How to accomplish it
+This app takes all the files you want import to Confluence and convert it to confluence-proper (compatible) catalogs-structure.
+All you need to do later is to move that catalog to Confluence via webDAV (which for 
+me takes something around 5-20 secondss per original file) and the work is done.
+  
+In new pages created this way, The script adds view-word-macro, which displays attached word file directly - in the page via browser. (This macro lets you to edit attached file directly in microsoft-word as well)
 
-   
-#
-# notes
-## Co już jest:
-Działa przenoszenie dokumentacji na zasadzie: 
-- dla każdego pliku .doc w folderze
-- ...załóż folder o takiej samej nazwie jak nazwa pliku (wraz z rozszerzeniem)
-- i wrzuć do niego ten plik (.doc),
-- i w content page`a wrzuć macro (view-word-macro) do wyświetlenia treści załączonego doc'a.
+Described solution doesn`t touch the issue of deciding for every single page if it should be imported as one or many-self-nested pages. Every file is imported as one. 
+Script can be easily adjusted for handling files with duplicated file/page-name, as well.
+
+# Origins and Confluence community link
+- I was not the only one, who encountered the lack of such build-in feature:  
+https://community.atlassian.com/t5/Confluence-questions/Bulk-import-Word-documents-as-confluence-page/qaq-p/854500
+- In the link given above, I`ve pointed more links, where is described how to configure webDAV, which is essential.
+
+# start:
+1. Enter proper input and output paths in index.ts .
+2. Input path - it accepts only flat structure. All .doc`s files should be in one catalog. 
+3. run `npm start`. 
+4. check output path.
 
 
-Przeniesienie tych folderów do Confluence (https://............../confluence/plugins/servlet/confluence/default - czyli via webDAV) jest równoznaczne z tworzeniem nowych stron.
+# searching attached content:
+Confluence (for me it was version 6.15.1) supports searching through content of files attached to pages. But(!) it does not thret does attachments as pages - so they (those attachments) have no parent- and ancestors pages. It means that you cant find any file-content with filter "find with ancestor" (in advanced search mode).
+This is issue is already (years ago; 2014-15, if I recall well) submitted bug.
 
-### ACHTUNG / TODO:
-- uwaga: przy przerzucaniu webDAV'em utworzonych plików istnieje kontrola zbublowanych nazw folderów, ale bez odpowiedniego komunikatu (Jest tylko "Nieoczekiwany błąd (...) System nie może uzyskać dostępu do pliku").
-- Zaimplementowano dosyć ograniczoną kontrole błędów - jeśli tworzenie danego pliku/katalogu się nie powiedzie (try/catch) aplikacja się wysypie. Trzeba śledzić console.log`a - żeby sprawdzić, który plik zapisał się ostatnio.
+# other
+There are other ways to solve given problem (bulk-import).
+1. Confluence/Attlasian  provides real REST api, to perform all operations with pages. Yet I`ve encountered some issues with generating user-api-token...
+2. You could use this api (or perform this manually...) to use build-in feature of "importing" files. Yet it breaks formatting , destroys tables etc....
 
-#
-## OLD-conception:
-- Przerobienie nodem (JS) .doc`ów na html
-- - jako automatyczny import plików
-- - zamiast wrzucania wordowskiego załącznika i wrzucania makro do jego wyświetlania.
-- - Patent niby mógłby działać, ale jest za dużo problemów : a to z tabelami, a to z załączonymi obrazkami/diagramami itd.
-
-note:
--wg https://confluence.atlassian.com/doc/confluence-markup-283640216.html
-syntax conf-page`ów to nie hmtl a xhtml.
-Po co?
-A bo nie działa zaawansowane wyszukiwanie. Tj. działa wyszukiwanie treści załączników, ale *nie gdy użyć opcji wyszukiwania stron "z [wskazanym] przodkiem"* - np. w celu zawężenia wyników.
-Jest na to obejście. Można wyeksportować do pliku (np. pdf) daną stroną wraz z podstronami i w niej szukać danej frazy. Eksportowane bowiem są także załączniki, które były uchwycone makrem word-view-macro.
-
+When dropping files (catalogs) via webDAV, Confluence keeps track of checking if there are any catalogs (pages) with doubled (already existanced) names. If there will be any it will just throw an error, with no proper description of it or even pointing witch catalog/name made the problem

@@ -2,7 +2,8 @@ import ConfluenceDocsAdapter from "./services/confluenceDocsAdapter.service";
 
 const confluenceDocsAdapter = new ConfluenceDocsAdapter();
 
-const INPUT_FILES_PATH: string = "./input-files/";
+// paths below must have ending slash:
+const INPUT_FILES_PATH: string = "./input-files/"; 
 const OUTPUT_PATH: string = "./output/";
 
 
